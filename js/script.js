@@ -3,6 +3,12 @@ const $title = $('#title');
 const $design = $('#design');
 const $colorOptions = $('#color option');
 const $checkboxes = $( ":checkbox" );
+const $total = $('<span></span>').text('Total = $');
+const $cost0 = $('<span></span>').text('0');
+const $payment = $('#payment');
+const $checkboxErrorMessage = $('<span></span>').text('You must pick one!').css({'color':'red', 'border':'2px solid red'});
+const $invalidInput = $('<span></span>').text('Invalid Input!').css({'color':'red', 'border':'2px solid red'});
+let cost = 0;
 
 $('#name').focus();
 
@@ -46,7 +52,9 @@ $design.on('change', function() {
         }
     }
 })
-//const disabledMessage = $('<span></span>').text('Unavailable due to time confliction');
+
+$('.activities').append($total);
+$total.after($cost0);
 
 $checkboxes.on('change', function(event) {
     for (let i = 1; i < 7; i++) {
@@ -57,8 +65,90 @@ $checkboxes.on('change', function(event) {
             $('.activities label').eq(i).before(disabledMessage); 
         } else if ($(event.target).attr('data-day-and-time') === $checkboxes.eq(i).attr('data-day-and-time')) {
             $checkboxes.eq(i).removeAttr('disabled');
-            //disabledMessage.remove();
+            $('.activities label').eq(i-1).next().remove();
             console.log(disabledMessage);
         }
     }
+    if ($(event.target).prop('checked') === true) {
+        cost += parseInt($(event.target).attr('data-cost'));
+        $cost0.text(cost);
+    } else {
+        cost -= parseInt($(event.target).attr('data-cost'));
+        $cost0.text(cost);
+    }
 });
+
+function hidePayments() {
+    $('#credit-card').hide();
+    $('#bitcoin').hide();
+    $('#paypal').hide();
+}
+
+$('#payment option').eq(0).attr('disabled', true);
+hidePayments();
+$payment.val('credit card');
+$('#credit-card').show();
+
+$payment.on('change', function() {
+    if($payment.val() === 'paypal') {
+        hidePayments();
+        $('#paypal').show();
+    } else if($payment.val() === 'bitcoin') {
+        hidePayments();
+        $('#bitcoin').show();
+    } else if($payment.val() === 'credit card') {
+        hidePayments();
+        $('#credit-card').show();
+    }
+});
+
+//namefield .+
+//email ^[^@]+@[^@.]+.[a-z]+$
+//zip ^\d{5}$
+//credit card ^\d{13}\d?\d?\d?$
+// CVV ^\d{3}$
+
+function checkboxValidation() {
+    for (let i = 0; i < $checkboxes.length; i++) {
+        if ($checkboxes.eq(i).prop('checked')) {
+            return;
+        }
+    }
+    $checkboxErrorMessage.remove();
+    $('.activities legend').after($checkboxErrorMessage);
+}
+
+function nameValidation() {
+  let result = /.+/.test($('#name').val());
+  if (!result) {
+      $('#name').before($invalidInput);
+  } 
+}
+
+function emailValidation() {
+    let result = /.+/.test($('#mail').val());
+    if (!result) {
+        $('#mail').before($invalidInput);
+        console.log('hi');
+    } 
+}
+function cardNumberValidation() {
+    let result = /^[^@]+@[^@.]+.[a-z]+$/.test($('#name').val());
+    if (!result) {
+        $('#name').before($invalidInput);
+    } 
+}
+
+function zipCodeValidation() {
+    let result = /.+/.test($('#name').val());
+    if (!result) {
+        $('#name').before($invalidInput);
+    } 
+}
+
+function cvvValidation() {
+    let result = /.+/.test($('#name').val());
+    if (!result) {
+        $('#name').before($invalidInput);
+    } 
+}
