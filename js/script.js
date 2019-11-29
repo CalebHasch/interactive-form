@@ -86,18 +86,20 @@ $checkboxes.on('change', function(event) {
     }
 });
 
-//
+// function for hiding all payment sections
 function hidePayments() {
     $('#credit-card').hide();
     $('#bitcoin').hide();
     $('#paypal').hide();
 }
 
+// sets credit card section to defualt
 $('#payment option').eq(0).attr('disabled', true);
 hidePayments();
 $payment.val('credit card');
 $('#credit-card').show();
 
+//changes which payment fields show up based off selection
 $payment.on('change', function() {
     if($payment.val() === 'paypal') {
         hidePayments();
@@ -111,6 +113,7 @@ $payment.on('change', function() {
     }
 });
 
+// checks to see if a checkbox has been checked and sends the appropiate error message
 function checkboxValidation() {
     for (let i = 0; i < $checkboxes.length; i++) {
         if ($checkboxes.eq(i).prop('checked')) {
@@ -123,6 +126,7 @@ function checkboxValidation() {
     return false;
 }
 
+// sends out error message if name field is empty
 function nameValidation() {
   let result = /.+/.test($('#name').val());
   let message = $('<span></span>').text('Invalid Input!').css({'color':'red', 'border':'2px solid red'});;
@@ -135,6 +139,7 @@ function nameValidation() {
   return result;
 }
 
+// sends out error message if email isn't formatted correctly and added to a keyup event
 function emailValidation() {
     let result = /^[^@]+@[^@.]+.[a-z]+$/.test($('#mail').val()); 
     let message = $('<span></span>').text('Invalid Input!').css({'color':'red', 'border':'2px solid red'});;
@@ -146,11 +151,11 @@ function emailValidation() {
     }
     return result; 
 }
-
 $('#mail').on('keyup', function() {
     emailValidation();
 });
 
+//sends out error message if the card number isn't formatted correctly
 function cardNumberValidation() {
     let result = /^\d{13}\d?\d?\d?$/.test($('#cc-num').val());
     let message = $('<span></span>').text('Invalid Input!').css({'color':'red', 'border':'2px solid red'});;
@@ -163,6 +168,7 @@ function cardNumberValidation() {
     return result;
 }
 
+// sends out error message if the zip code isn't formatted correctly
 function zipCodeValidation() {
     let result = /.+/.test($('#zip').val());
     let result2 = /^\d{5}$/.test($('#zip').val());
@@ -176,6 +182,7 @@ function zipCodeValidation() {
     return result;
 }
 
+// sends out error message if the cvv isn't formatted correctly
 function cvvValidation() {
     let result = /^\d{3}$/.test($('#cvv').val());
     let message = $('<span></span>').text('Invalid Input!').css({'color':'red', 'border':'2px solid red'});;
@@ -188,6 +195,7 @@ function cvvValidation() {
     return result;
 }
 
+// checks to make sure everything is filled and formatted correctly upon clicking submit and stops page from sending if anything is out of place
 $('button').on('click', function(event) {
     nameValidation();
     emailValidation();
